@@ -4,7 +4,7 @@ A microservices-based retail management system implementing event-driven archite
 
 ##  Project Overview
 
-This project demonstrates a modern retail management system split into microservices that communicate through Apache Kafka message broker. The system includes Product Service for managing product catalog and Inventory Service for stock management.
+This project demonstrates a modern retail management system split into microservices that communicate through Apache Kafka message broker. The system includes Order Service for ordering products and Inventory Service for stock management.
 
 ##  Architecture
 
@@ -69,11 +69,10 @@ kafka.group.id=inventory-service-group
 bash
 # Start Order Service
 cd order-service
-[mvn spring-boot:run / npm start / python app.py]
-
+[mvn spring-boot:run]
 # Start Inventory Service
 cd inventory-service
-[mvn spring-boot:run / npm start / python app.py]
+[mvn spring-boot:run]
 
 
 ##  API Endpoints
@@ -89,8 +88,8 @@ cd inventory-service
 
 ##  Event Flow
 
-1. Order Service publishes events to `product-events` topic
-2. Inventory Service consumes events from `product-events` topic
+1. Order Service publishes events to `order-created-topic` topic
+2. Inventory Service consumes events from `order-created-topic` topic
 3. Inventory Service automatically syncs stock data based on product changes
 4. Services remain loosely coupled through Kafka messaging
 
