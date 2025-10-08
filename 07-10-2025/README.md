@@ -40,8 +40,8 @@ The system follows a microservices architecture pattern with event-driven commun
 ### 1. Start Kafka 
 
 bash
-# Start Zookeeper
-bin/windows/server-start.sh config/zookeeper.properties
+# Start Broker
+bin/windows/server-start.sh config/broker.properties
 
 # Start Kafka Server
 bin/windows/kafka-server-start.sh config/server.properties
@@ -51,10 +51,9 @@ bin/windows/kafka-server-start.sh config/server.properties
 
 bash
 # Create product events topic
-bin/windows/kafka-topics.sh --create --topic product-events --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
+bin/windows/kafka-topics.sh --create --topic order-created-topic --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
 
-# Create inventory events topic
-bin/kafka-topics.sh --create --topic inventory-events --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
+
 
 
 ### 3. Configure Services
@@ -62,7 +61,7 @@ bin/kafka-topics.sh --create --topic inventory-events --bootstrap-server localho
 Update application configuration files with your Kafka broker details:
 properties
 kafka.bootstrap.servers=localhost:9092
-kafka.group.id=retail-consumer-group
+kafka.group.id=inventory-service-group
 
 
 ### 4. Run Services
