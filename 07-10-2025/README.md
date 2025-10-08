@@ -16,7 +16,7 @@ The system follows a microservices architecture pattern with event-driven commun
 
 ##  Features
 
-- **Product Management**: CRUD operations for products
+- **Product Management**: CRU operations for products
 - **Inventory Tracking**: Real-time stock level monitoring
 - **Event-Driven Communication**: Services communicate via Kafka topics
 - **Asynchronous Processing**: Non-blocking operations between services
@@ -29,23 +29,7 @@ The system follows a microservices architecture pattern with event-driven commun
 - **Database**: [H2 DB]
 - **Build Tool**: [Maven/Spring Boot Starter]
 
-##  Project Structure
-
-
-retail-project/
-├── product-service/          # Product microservice
-│   ├── src/
-│   ├── config/
-│   └── pom.xml/package.json
-├── inventory-service/        # Inventory microservice
-│   ├── src/
-│   ├── config/
-│   └── pom.xml/package.json
-├── kafka-config/            # Kafka configuration files
-└── README.md
-
-
-## ⚙️ Prerequisites
+##  Prerequisites
 
 - Java 21+
 - Apache Kafka 2.8+
@@ -95,19 +79,16 @@ cd inventory-service
 
 ##  API Endpoints
 
-### Product Service
-- `POST /api/products` - Create new product
-- `GET /api/products` - Get all products
-- `GET /api/products/{id}` - Get product by ID
-- `PUT /api/products/{id}` - Update product
-- `DELETE /api/products/{id}` - Delete product
+### Order Service
+- `POST /api/orders/create` - Create new product
+- `GET /api/orders/all` - Get all products
 
 ### Inventory Service
-- `GET /api/inventory/{productId}` - Get inventory for product
-- `POST /api/inventory` - Add inventory
-- `PUT /api/inventory/{id}` - Update inventory levels
+- `GET /api/inventory/items/{productId}` - Get inventory for product
+- `POST /api/inventory/items` - Add inventory
+-`GET /api/inventory/items/all` - Get all products
 
-## 🔄 Event Flow
+##  Event Flow
 
 1. Order Service publishes events to `product-events` topic
 2. Inventory Service consumes events from `product-events` topic
@@ -124,7 +105,7 @@ cd inventory-service
 - Containerize with Docker
 - Orchestrate with Kubernetes
 
-## 👥 Contributors
+##  Contributors
 
 - Avidi Raghavendra
 
@@ -136,7 +117,7 @@ This project is created for learning purposes.
 
 For questions or feedback, please reach out to [avidi.raghavendra@encora.com]
 
----
+
 
 **Date Created**: October 7, 2025  
 **Last Updated**: October 8, 2025
