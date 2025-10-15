@@ -34,17 +34,19 @@ pipeline {
                     bat 'mvn test'
                 }
             }
-            post {
-                always {
-                    script {
-                        try {
-                            jacoco execPattern: '**/target/jacoco.exec'
-                        } catch (err) {
-                            echo "JaCoCo not available or failed: ${err.message}"
-                        }
-                    }
-                }
+post {
+    always {
+        script {
+            try {
+                // jacoco execPattern: '**/target/jacoco.exec'
+                echo 'JaCoCo reporting skipped — plugin not available.'
+            } catch (err) {
+                echo "JaCoCo not available or failed: ${err.message}"
             }
+        }
+    }
+}
+
         }
 
         stage('Integration Tests') {
