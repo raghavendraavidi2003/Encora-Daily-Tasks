@@ -1,133 +1,129 @@
 pipeline {
     agent any
-    
+
     tools {
         maven 'maven' // Configure in Jenkins Global Tool Configuration
         jdk 'java.home' // Configure in Jenkins Global Tool Configuration
     }
-    
+
     environment {
         MAVEN_OPTS = '-Xmx1024m'
-        //SONAR_HOST_URL = 'http://localhost:9000' // Optional: SonarQube URL
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
                 echo 'Checking out code from repository...'
                 checkout scm
-                // Or use: git branch: 'main', url: 'https://github.com/your-repo/spring-security-app.git'
             }
         }
-        
-       stage('Build') {
-    steps {
-        echo 'Building Spring Security application...'
-        dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
-            bat 'mvn clean compile -DskipTests'
-        }
-    }
-}
 
-        
-        stage('Unit Tests') {
-    steps {
-        echo 'Running unit tests...'
-        dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
-            bat 'mvn test'
-        }
-    }
-    post {
-    always {
-        script {
-            try {
-                jacoco execPattern: '**/target/jacoco.exec'
-            } catch (err) {
-                echo "JaCoCo not available or failed: ${err.message}"
-            }
-        }
-    }
-}
-
-        
-        stage('Integration Tests') {
+        stage('Build') {
             steps {
-                echo 'Running integration tests...'
-                bat 'mvn verify -DskipUnitTests'
-            }
-        }
-        
-       stage('Code Quality Analysis') {
-    steps {
-        echo 'Analyzing code quality...'
-        dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
-            script {
-                try {
-                    bat 'mvn checkstyle:checkstyle'
-                } catch (Exception e) {
-                    echo "Code quality check failed: ${e.message}"
+                echo 'Building Spring Security application...'
+                dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+                    bat 'mvn clean compile -DskipTests'
                 }
             }
         }
-    }
-    post {
-        always {
-            recordIssues enabledForFailure: true, tools: [checkStyle()]
-        }
-    }
-}
 
-        
-        stage('Security Scan') {
-    steps {
-        echo 'Running security vulnerability scan...'
-        dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
-            bat 'mvn dependency-check:check'
-        }
-    }
-    post {
-        always {
-            dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-        }
-    }
-}
-
-        
-        stage('Package') {
-    steps {
-        echo 'Packaging application...'
-        dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
-            bat 'mvn package -DskipTests'
-        }
-    }
-    post {
-        success {
-            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
-        }
-    }
-}
-        
-       stage('Deploy to Dev') {
-    steps {
-        echo 'Deploying to Development environment...'
-        dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
-            script {
-                bat '''
-                    if not exist "C:\\Jenkins\\deployments" mkdir C:\\Jenkins\\deployments
-                    copy target\\*.jar C:\\Jenkins\\deployments\\spring-security-app.jar
-                '''
+        stage('Unit Tests') {
+            steps {
+                echo 'Running unit tests...'
+                dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+                    bat 'mvn test'
+                }
+            }
+            post {
+                always {
+                    script {
+                        try {
+                            jacoco execPattern: '**/target/jacoco.exec'
+                        } catch (err) {
+                            echo "JaCoCo not available or failed: ${err.message}"
+                        }
+                    }
+                }
             }
         }
-    }
-}
-        
+
+        stage('Integration Tests') {
+            steps {
+                echo 'Running integration tests...'
+                dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+                    bat 'mvn verify -DskipUnitTests'
+                }
+            }
+        }
+
+        stage('Code Quality Analysis') {
+            steps {
+                echo 'Analyzing code quality...'
+                dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+                    script {
+                        try {
+                            bat 'mvn checkstyle:checkstyle'
+                        } catch (Exception e) {
+                            echo "Code quality check failed: ${e.message}"
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    recordIssues enabledForFailure: true, tools: [checkStyle()]
+                }
+            }
+        }
+
+        stage('Security Scan') {
+            steps {
+                echo 'Running security vulnerability scan...'
+                dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+                    bat 'mvn dependency-check:check'
+                }
+            }
+            post {
+                always {
+                    dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                echo 'Packaging application...'
+                dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+                    bat 'mvn package -DskipTests'
+                }
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+                }
+            }
+        }
+
+        stage('Deploy to Dev') {
+            steps {
+                echo 'Deploying to Development environment...'
+                dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+                    script {
+                        bat '''
+                            if not exist "C:\\Jenkins\\deployments" mkdir C:\\Jenkins\\deployments
+                            copy target\\*.jar C:\\Jenkins\\deployments\\spring-security-app.jar
+                        '''
+                    }
+                }
+            }
+        }
+
         stage('Smoke Tests') {
             steps {
                 echo 'Running smoke tests on deployment...'
                 script {
                     sleep(time: 30, unit: 'SECONDS') // Wait for app to start
-                    
-                    // Using PowerShell's Invoke-WebRequest (built-in on Windows)
+
                     powershell '''
                         try {
                             $response = Invoke-WebRequest -Uri "http://localhost:8080/actuator/health" -UseBasicParsing -TimeoutSec 10
@@ -147,7 +143,7 @@ pipeline {
             }
         }
     }
-    
+
     post {
         success {
             echo 'Pipeline completed successfully!'
