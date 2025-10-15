@@ -3,7 +3,7 @@ pipeline {
     
     tools {
         maven 'maven' // Configure in Jenkins Global Tool Configuration
-        jdk 'java home' // Configure in Jenkins Global Tool Configuration
+        jdk 'java.home' // Configure in Jenkins Global Tool Configuration
     }
     
     environment {
