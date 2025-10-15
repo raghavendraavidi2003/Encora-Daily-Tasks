@@ -20,25 +20,31 @@ pipeline {
             }
         }
         
-        stage('Build') {
-            steps {
-                echo 'Building Spring Security application...'
-                bat 'mvn clean compile -DskipTests'
-            }
+       stage('Build') {
+    steps {
+        echo 'Building Spring Security application...'
+        dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+            bat 'mvn clean compile -DskipTests'
         }
+    }
+}
+
         
         stage('Unit Tests') {
-            steps {
-                echo 'Running unit tests...'
-                bat 'mvn test'
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
-                    jacoco execPattern: '**/target/jacoco.exec'
-                }
-            }
+    steps {
+        echo 'Running unit tests...'
+        dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+            bat 'mvn test'
         }
+    }
+    post {
+        always {
+            junit '09-10-2025/Secure Task Management API using Spring Security/secure-task-api/target/surefire-reports/*.xml'
+            jacoco execPattern: '09-10-2025/Secure Task Management API using Spring Security/secure-task-api/target/jacoco.exec'
+        }
+    }
+}
+
         
         stage('Integration Tests') {
             steps {
@@ -47,67 +53,69 @@ pipeline {
             }
         }
         
-        stage('Code Quality Analysis') {
-            steps {
-                echo 'Analyzing code quality...'
-                script {
-                    try {
-                        // Uncomment if using SonarQube
-                        // withSonarQubeEnv('SonarQube') {
-                        //     bat 'mvn sonar:sonar'
-                        // }
-                        bat 'mvn checkstyle:checkstyle'
-                    } catch (Exception e) {
-                        echo "Code quality check failed: ${e.message}"
-                    }
-                }
-            }
-            post {
-                always {
-                    recordIssues enabledForFailure: true, tools: [checkStyle()]
+       stage('Code Quality Analysis') {
+    steps {
+        echo 'Analyzing code quality...'
+        dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+            script {
+                try {
+                    bat 'mvn checkstyle:checkstyle'
+                } catch (Exception e) {
+                    echo "Code quality check failed: ${e.message}"
                 }
             }
         }
+    }
+    post {
+        always {
+            recordIssues enabledForFailure: true, tools: [checkStyle()]
+        }
+    }
+}
+
         
         stage('Security Scan') {
-            steps {
-                echo 'Running security vulnerability scan...'
-                bat 'mvn dependency-check:check'
-            }
-            post {
-                always {
-                    dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-                }
-            }
+    steps {
+        echo 'Running security vulnerability scan...'
+        dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+            bat 'mvn dependency-check:check'
         }
+    }
+    post {
+        always {
+            dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+        }
+    }
+}
+
         
         stage('Package') {
-            steps {
-                echo 'Packaging application...'
-                bat 'mvn package -DskipTests'
-            }
-            post {
-                success {
-                    archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
-                }
-            }
+    steps {
+        echo 'Packaging application...'
+        dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+            bat 'mvn package -DskipTests'
         }
+    }
+    post {
+        success {
+            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+        }
+    }
+}
         
-        stage('Deploy to Dev') {
-            steps {
-                echo 'Deploying to Development environment...'
-                script {
-                    // Deploy JAR to local directory on Windows
-                    bat '''
-                        if not exist "C:\\Jenkins\\deployments" mkdir C:\\Jenkins\\deployments
-                        copy target\\*.jar C:\\Jenkins\\deployments\\spring-security-app.jar
-                    '''
-                    
-                    // Optional: Run the application in background
-                    // bat 'start /B java -jar C:\\Jenkins\\deployments\\spring-security-app.jar'
-                }
+       stage('Deploy to Dev') {
+    steps {
+        echo 'Deploying to Development environment...'
+        dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+            script {
+                bat '''
+                    if not exist "C:\\Jenkins\\deployments" mkdir C:\\Jenkins\\deployments
+                    copy target\\*.jar C:\\Jenkins\\deployments\\spring-security-app.jar
+                '''
             }
         }
+    }
+}
         
         stage('Smoke Tests') {
             steps {
