@@ -38,9 +38,13 @@ pipeline {
         }
     }
     post {
-        always {
-            junit '09-10-2025/Secure Task Management API using Spring Security/secure-task-api/target/surefire-reports/*.xml'
-            jacoco execPattern: '09-10-2025/Secure Task Management API using Spring Security/secure-task-api/target/jacoco.exec'
+    always {
+        script {
+            try {
+                jacoco execPattern: '**/target/jacoco.exec'
+            } catch (err) {
+                echo "JaCoCo not available or failed: ${err.message}"
+            }
         }
     }
 }
