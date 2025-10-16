@@ -9,16 +9,16 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checking out code from repository...'
-                checkout scm
+                //checkout scm
             }
         }
 
         stage('Build') {
             steps {
                 echo 'Building Spring Security application...'
-                dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
-                    bat 'clean package'
-                }
+               // dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+                   // bat 'clean package'
+               // }
             }
         }
 
@@ -27,7 +27,7 @@ pipeline {
                 echo 'Running unit tests...'
                 //dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
                    // bat 'mvn test'
-                }
+               // }
             }
         }
 
@@ -36,7 +36,7 @@ pipeline {
                 echo 'Running integration tests...'
                // dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
                   //  bat 'mvn verify -DskipUnitTests'
-                }
+               // }
             }
         }
 
@@ -57,7 +57,7 @@ pipeline {
                 echo 'Packaging application...'
                 //dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
                     //bat 'mvn package -DskipTests'
-                }
+               // }
             }
         }
 
@@ -69,7 +69,7 @@ pipeline {
                     //    if not exist "C:\\Jenkins\\deployments" mkdir C:\\Jenkins\\deployments
                      //   copy target\\*.jar C:\\Jenkins\\deployments\\spring-security-app.jar
                    // '''
-                }
+                //}
             }
         }
 
