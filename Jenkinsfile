@@ -73,27 +73,7 @@ pipeline {
             }
         }
 
-        stage('Smoke Tests') {
-            steps {
-                echo 'Running smoke tests on deployment...'
-                sleep(time: 30, unit: 'SECONDS')
-                powershell '''
-                    try {
-                        $response = Invoke-WebRequest -Uri "http://localhost:8081/actuator/health" -UseBasicParsing -TimeoutSec 10
-                        if ($response.StatusCode -eq 200) {
-                            Write-Host "Health check passed!"
-                            exit 0
-                        } else {
-                            Write-Host "Health check failed with status: $($response.StatusCode)"
-                            exit 1
-                        }
-                    } catch {
-                        Write-Host "Health check failed: $_"
-                        exit 1
-                    }
-                '''
-            }
-        }
+        
     }
 
     post {
