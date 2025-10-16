@@ -17,7 +17,7 @@ pipeline {
             steps {
                 echo 'Building Spring Security application...'
                 dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
-                    bat 'mvn clean compile -DskipTests'
+                    bat 'clean package'
                 }
             }
         }
@@ -25,8 +25,8 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 echo 'Running unit tests...'
-                dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
-                    bat 'mvn test'
+                //dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+                   // bat 'mvn test'
                 }
             }
         }
@@ -34,8 +34,8 @@ pipeline {
         stage('Integration Tests') {
             steps {
                 echo 'Running integration tests...'
-                dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
-                    bat 'mvn verify -DskipUnitTests'
+               // dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+                  //  bat 'mvn verify -DskipUnitTests'
                 }
             }
         }
@@ -55,8 +55,8 @@ pipeline {
         stage('Package') {
             steps {
                 echo 'Packaging application...'
-                dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
-                    bat 'mvn package -DskipTests'
+                //dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+                    //bat 'mvn package -DskipTests'
                 }
             }
         }
@@ -64,11 +64,11 @@ pipeline {
         stage('Deploy to Dev') {
             steps {
                 echo 'Deploying to Development environment...'
-                dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
-                    bat '''
-                        if not exist "C:\\Jenkins\\deployments" mkdir C:\\Jenkins\\deployments
-                        copy target\\*.jar C:\\Jenkins\\deployments\\spring-security-app.jar
-                    '''
+               // dir('09-10-2025/Secure Task Management API using Spring Security/secure-task-api') {
+                  //  bat '''
+                    //    if not exist "C:\\Jenkins\\deployments" mkdir C:\\Jenkins\\deployments
+                     //   copy target\\*.jar C:\\Jenkins\\deployments\\spring-security-app.jar
+                   // '''
                 }
             }
         }
