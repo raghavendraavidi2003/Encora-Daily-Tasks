@@ -79,7 +79,7 @@ pipeline {
                 sleep(time: 30, unit: 'SECONDS')
                 powershell '''
                     try {
-                        $response = Invoke-WebRequest -Uri "http://localhost:8080/actuator/health" -UseBasicParsing -TimeoutSec 10
+                        $response = Invoke-WebRequest -Uri "http://localhost:8081/actuator/health" -UseBasicParsing -TimeoutSec 10
                         if ($response.StatusCode -eq 200) {
                             Write-Host "Health check passed!"
                             exit 0
